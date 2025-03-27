@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom'; // Make sure useNavigate is imported
+
 
 const Login = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
+    const navigate = useNavigate(); // Initialize useNavigate
 
     const handleLogin = async (e) => {
         e.preventDefault();
@@ -20,8 +23,10 @@ const Login = () => {
             });
 
             console.log('Login success', response.data);
-            // Redirect to dashboard or protected page
-            window.location.href = '/Dashboard'; // Example: redirect after login
+
+            // Redirect to dashboard with username and password as state
+            navigate('/dashboard', { state: { username, password } });
+
         } catch (err) {
             setError('Invalid username or password');
             console.error('Login error:', err);

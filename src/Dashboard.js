@@ -1,13 +1,15 @@
 // src/components/Dashboard.js
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useLocation } from 'react-router-dom'; // Import useLocation
 
 const Dashboard = () => {
     const [products, setProducts] = useState([]);
     const [newProduct, setNewProduct] = useState({ name: '', price: '' });
     const [editProduct, setEditProduct] = useState(null);
-    const username = 'admin'; // Your username
-    const password = 'password'; // Your password
+
+    const location = useLocation();
+    const { username, password } = location.state || {}; // Default to an empty object if no state is passed
 
     // Create the basic auth header
     const authHeader = 'Basic ' + btoa(username + ':' + password);
