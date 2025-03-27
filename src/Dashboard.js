@@ -6,6 +6,11 @@ const Dashboard = () => {
     const [products, setProducts] = useState([]);
     const [newProduct, setNewProduct] = useState({ name: '', price: '' });
     const [editProduct, setEditProduct] = useState(null);
+    const username = 'admin'; // Your username
+    const password = 'password'; // Your password
+
+    // Create the basic auth header
+    const authHeader = 'Basic ' + btoa(username + ':' + password);
 
     useEffect(() => {
         fetchProducts();
@@ -13,7 +18,11 @@ const Dashboard = () => {
 
     const fetchProducts = async () => {
         try {
-            const response = await axios.get('http://localhost:8080/api/products');
+            const response = await axios.get('http://localhost:8080/api/products', {
+                headers: {
+                    Authorization: authHeader
+                }
+            });
             setProducts(response.data);
         } catch (error) {
             console.error('Error fetching products:', error);
@@ -22,7 +31,11 @@ const Dashboard = () => {
 
     const handleDelete = async (id) => {
         try {
-            await axios.delete(`http://localhost:8080/api/products/${id}`);
+            await axios.delete(`http://localhost:8080/api/products/${id}`, {
+                headers: {
+                    Authorization: authHeader
+                }
+            });
             fetchProducts(); // Refresh product list
         } catch (error) {
             console.error('Error deleting product:', error);
@@ -31,8 +44,17 @@ const Dashboard = () => {
 
     const handleCreate = async (e) => {
         e.preventDefault();
+
+
+
         try {
-            await axios.post('http://localhost:8080/api/products', newProduct);
+            // Include the authentication header in the request
+            await axios.post('http://localhost:8080/api/products', newProduct, {
+                headers: {
+                    Authorization: authHeader,
+                },
+            });
+
             setNewProduct({ name: '', price: '' }); // Clear form
             fetchProducts(); // Refresh product list
         } catch (error) {
@@ -47,7 +69,11 @@ const Dashboard = () => {
     const handleUpdate = async (e) => {
         e.preventDefault();
         try {
-            await axios.put(`http://localhost:8080/api/products/${editProduct.id}`, editProduct);
+            await axios.put(`http://localhost:8080/api/products/${editProduct.id}`, editProduct, {
+                headers: {
+                    Authorization: authHeader
+                }
+            });
             setEditProduct(null); // Close the edit form
             fetchProducts(); // Refresh product list
         } catch (error) {
